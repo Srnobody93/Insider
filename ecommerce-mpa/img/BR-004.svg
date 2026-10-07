@@ -1,0 +1,2 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><pattern id="p" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#f6edd2"/><rect width="24" height="4" fill="#c9b27c"/><rect width="4" height="24" fill="#c9b27c"/></pattern></defs>
+<rect width="400" height="300" fill="#efe3c8"/><polygon points="70,90 330,90 370,230 30,230" fill="url(#p)"/><polygon points="70,90 330,90 340,120 60,120" fill="#0001"/><path d="M30 230H370V262Q300 250 200 262T30 262Z" fill="url(#p)"/></svg>
