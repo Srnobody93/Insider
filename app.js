@@ -45,7 +45,7 @@ product(){
  const p=prod(new URLSearchParams(location.search).get('id'));if(!p){location.replace('index.html');return;}
  app.innerHTML=`<div class="two"><div>${thumb(p,'big')}</div><div><h1>${p.name}</h1><div class="crumb">${p.tax.join(' › ')}</div><p class="price" style="font-size:24px">${price(p)}</p><button class="btn" id="add">Añadir al carrito</button> <a class="btn alt" href="cart.html">Ver carrito</a><p id="msg" class="mut" role="status"></p></div></div>`;
  ev('view_item',{currency:'EUR',value:p.price,items:[item(p)]},{product:ins(p)});
- $('#add').onclick=()=>{change(p.id,1);ev('add_to_cart',{currency:'EUR',value:p.price,items:[item(p)]},{cart:cartObj()});$('#msg').textContent='Añadido al carrito.';};
+ $('#add').onclick=()=>{change(p.id,1);ev('add_to_cart',{currency:'EUR',value:p.price,items:[item(p)]},{cart:cartObj(),cart_item:ins(p,1)});$('#msg').textContent='Añadido al carrito.';};
 },
 
 cart(){
@@ -58,8 +58,8 @@ cart(){
  draw();
  app.addEventListener('click',e=>{const b=e.target.closest('button[data-a]');if(!b)return;
   const p=prod(b.dataset.id),cur=get('cart',[]).find(x=>x.id===p.id).q;
-  if(b.dataset.a==='1'){change(p.id,1);ev('add_to_cart',{currency:'EUR',value:p.price,items:[item(p)]},{cart:cartObj()});}
-  else{const n=b.dataset.a==='rm'?cur:1;change(p.id,-n);ev('remove_from_cart',{currency:'EUR',value:r2(p.price*n),items:[item(p,n)]},{cart:cartObj()});}
+  if(b.dataset.a==='1'){change(p.id,1);ev('add_to_cart',{currency:'EUR',value:p.price,items:[item(p)]},{cart:cartObj(),cart_item:ins(p,1)});}
+  else{const n=b.dataset.a==='rm'?cur:1;change(p.id,-n);ev('remove_from_cart',{currency:'EUR',value:r2(p.price*n),items:[item(p,n)]},{cart:cartObj(),cart_item:ins(p,n)});}
   draw();});
 },
 
