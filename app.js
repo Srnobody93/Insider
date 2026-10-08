@@ -25,11 +25,11 @@ const lines=()=>get('cart',[]).map(l=>({p:prod(l.id),q:l.q}));
 const items=()=>lines().map(l=>item(l.p,l.q));
 const sub=()=>r2(lines().reduce((s,l)=>s+l.p.price*l.q,0));
 const shipCost=(k,s)=>k==='standard'&&s>=100?0:SHIP[k].c;
-const badge=()=>$('#badge').textContent=lines().reduce((s,l)=>s+l.q,0);
+const badge=()=>{$('#badge').textContent=lines().reduce((s,l)=>s+l.q,0);set('cartSnap',cartObj());};
 const change=(id,d)=>{let c=get('cart',[]),l=c.find(x=>x.id===id);if(l)l.q+=d;else c.push({id,q:d});set('cart',c.filter(x=>x.q>0));badge();};
 const thumb=(p,c='')=>`<img class="ph ${c}" src="img/${p.id}.svg" alt="${p.name}">`;
 const insItems=()=>lines().map(l=>ins(l.p,l.q));
-const cartObj=()=>{const S=sub();return {total:r2(S+shipCost('standard',S)),items:insItems()};};
+const cartObj=()=>{const S=sub();return {total:S?r2(S+shipCost('standard',S)):0,items:insItems()};};
 const price=p=>(p.list>p.price?`<span class="old">${eur(p.list)}</span>`:'')+eur(p.price);
 const pages={
 
@@ -72,7 +72,7 @@ cart(){
 checkout(){
  if(!lines().length){location.replace('cart.html');return;}
  const S=sub();let ship='standard',pay='card';
- app.innerHTML=`<h1>Checkout</h1><form id="f" class="two"><div class="box"><label>Nombre completo<input type="text" name="name" required></label><label>Email<input type="email" name="email" required></label><label>Dirección<input type="text" name="addr" required></label><label>Ciudad y código postal<input type="text" name="city" required></label>
+ app.innerHTML=`<h1>Checkout</h1><form id="f" class="two"><div class="box"><label>Nombre completo<input type="text" name="name" required></label><label>Email<input type="email" name="email" required></label><label>Dirección<input type="text" name="addr" required></label><label>Ciudad y código postal<input type="text" name="city" required></label><label>Teléfono (opcional)<input type="text" name="phone"></label><div class="opt"><input type="checkbox" name="optin" id="optin"><label for="optin">Acepto recibir comunicaciones comerciales por email</label></div>
  <h3>Envío</h3>${Object.entries(SHIP).map(([k,v],i)=>`<div class="opt"><input type="radio" name="ship" id="s${k}" value="${k}" ${i?'':'checked'}><label for="s${k}">${v.n}</label></div>`).join('')}
  <h3>Pago (simulado)</h3>${Object.entries(PAY).map(([k,v],i)=>`<div class="opt"><input type="radio" name="pay" id="p${k}" value="${k}" ${i?'':'checked'}><label for="p${k}">${v}</label></div>`).join('')}</div>
  <div class="box"><div id="sum"></div><button class="btn" type="submit">Confirmar pedido</button></div></form>`;
@@ -83,8 +83,9 @@ checkout(){
   if(e.target.name==='ship'){ship=e.target.value;sum();ev('add_shipping_info',{currency:'EUR',value:S,shipping_tier:SHIP[ship].n,items:items()});}
   if(e.target.name==='pay'){pay=e.target.value;ev('add_payment_info',{currency:'EUR',value:S,payment_type:PAY[pay],items:items()});}});
  $('#f').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target),sc=shipCost(ship,S),total=r2(S+sc);
+  {const nm=String(f.get('name')).trim().split(' ');set('user',{email:f.get('email'),name:nm[0],surname:nm.slice(1).join(' '),phone_number:f.get('phone')||undefined,gdpr_optin:!!f.get('optin'),email_optin:!!f.get('optin')});}
   set('order',{id:'BR-'+Date.now().toString(36).toUpperCase(),date:new Date().toISOString(),customer:{name:f.get('name'),email:f.get('email'),addr:f.get('addr'),city:f.get('city')},items:items(),ins:insItems(),sub:S,ship:sc,shipTier:SHIP[ship].n,tax:r2(total-total/1.21),total,payment:PAY[pay],tracked:false});
-  set('cart',[]);location.href='confirmation.html';});
+  set('cart',[]);set('cartSnap',null);location.href='confirmation.html';});
 },
 
 confirmation(){
