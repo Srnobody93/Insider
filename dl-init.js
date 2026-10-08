@@ -1,6 +1,8 @@
-/* Se carga ANTES del snippet de GTM. En una MPA el dataLayer se reinicia en cada página,
-   así que user, currency, page_type y cart se vuelven a publicar en cada carga. */
+/* Se carga ANTES del snippet de GTM (después de catalog.js).
+   En una MPA el dataLayer se reinicia en cada página, así que se publica en cada carga:
+   page_type, currency, user, cart y page_data (el objeto propio de cada página). */
 (function () {
+  var pt = document.currentScript.dataset.page;
   var g = function (k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
   var id;
   try {
@@ -9,8 +11,23 @@
   } catch (e) {}
   var u = g('user') || {}, snap = g('cartSnap');
   var user = Object.assign({ uuid: id, language: 'es', returning: !!(u.email || g('order')) }, u);
-  var data = { page_type: document.currentScript.dataset.page, currency: 'EUR', user: user };
+  var data = { page_type: pt, currency: 'EUR', user: user };
   if (snap && snap.items && snap.items.length) data.cart = snap;
+
+  // page_data: product -> producto | cart -> {total, items} | purchase -> {order_id, total, items}
+  var pd = null;
+  if (pt === 'product') {
+    var pid = new URLSearchParams(location.search).get('id');
+    var p = (window.CATALOG || []).filter(function (x) { return x.id === pid; })[0];
+    if (p) pd = window.insProduct(p);
+  } else if (pt === 'cart') {
+    pd = snap && snap.items ? snap : { total: 0, items: [] };
+  } else if (pt === 'purchase') {
+    var o = g('order');
+    if (o) pd = { order_id: o.id, total: o.total, items: o.ins };
+  }
+  if (pd) data.page_data = pd;
+
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push(data);
 })();

@@ -1,11 +1,5 @@
 (()=>{
-const P=[
-{id:'BR-001',name:'Cafetera italiana',list:39.9,price:34.9,tax:['Cocina','Café','Cafeteras'],brand:'Brasa'},
-{id:'BR-002',name:'Sartén de hierro',list:49,price:49,tax:['Cocina','Utensilios','Sartenes'],brand:'Forja'},
-{id:'BR-003',name:'Set de cuchillos',list:99.5,price:89.5,tax:['Cocina','Utensilios','Cuchillos'],brand:'Forja'},
-{id:'BR-004',name:'Mantel de lino',list:27.5,price:27.5,tax:['Mesa','Textil','Manteles'],brand:'Brasa'},
-{id:'BR-005',name:'Jarra de cerámica',list:25,price:22,tax:['Mesa','Vajilla','Jarras'],brand:'Arcilla'},
-{id:'BR-006',name:'Tabla de olivo',list:31,price:31,tax:['Mesa','Servir','Tablas'],brand:'Arcilla'}];
+const P=window.CATALOG;
 const SHIP={standard:{n:'Estándar (3-5 días)',c:4.9},express:{n:'Exprés (24 h)',c:9.9}};
 const PAY={card:'Tarjeta',paypal:'PayPal',transfer:'Transferencia'};
 const dl=window.dataLayer=window.dataLayer||[];
@@ -17,7 +11,7 @@ const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){ret
 const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const prod=id=>P.find(p=>p.id===id);
 const abs=u=>new URL(u,location.href).href,purl=p=>abs('product.html?id='+p.id),img=p=>abs('img/'+p.id+'.svg');
-const ins=(p,q)=>({id:p.id,name:p.name,taxonomy:p.tax,unit_price:p.list,unit_sale_price:p.price,url:purl(p),product_image_url:img(p),...(q?{quantity:q}:{})});
+const ins=window.insProduct;
 const cats=()=>{const t={};P.forEach(p=>{t[p.tax[0]]=t[p.tax[0]]||{};(t[p.tax[0]][p.tax[1]]=t[p.tax[0]][p.tax[1]]||[]).push(p.tax[2]);});return t;};
 window.getCategories=cats;
 const item=(p,q=1,list,i)=>({item_id:p.id,item_name:p.name,item_brand:p.brand,item_category:p.tax[0],item_category2:p.tax[1],item_category3:p.tax[2],price:p.price,quantity:q,...(list?{item_list_id:'catalogo',item_list_name:list,index:i}:{})});
