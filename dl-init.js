@@ -14,13 +14,13 @@
   var data = { page_type: pt, currency: 'EUR', user: user };
   if (snap && snap.items && snap.items.length) data.cart = snap;
 
-  // page_data: product -> producto | cart -> {total, items} | purchase -> {order_id, total, items}
+  // page_data: product -> producto | cart y checkout -> {total, items} | purchase -> {order_id, total, items}
   var pd = null;
   if (pt === 'product') {
     var pid = new URLSearchParams(location.search).get('id');
     var p = (window.CATALOG || []).filter(function (x) { return x.id === pid; })[0];
     if (p) pd = window.insProduct(p);
-  } else if (pt === 'cart') {
+  } else if (pt === 'cart' || pt === 'checkout') {  // checkout se trata como parte del carrito
     pd = snap && snap.items ? snap : { total: 0, items: [] };
   } else if (pt === 'purchase') {
     var o = g('order');
