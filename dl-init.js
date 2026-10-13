@@ -4,7 +4,7 @@
 (function () {
   var pt = document.currentScript.dataset.page;
   var cat = new URLSearchParams(location.search).get('cat');
-  if (pt === 'home' && cat) pt = 'category';   // index.html?cat=... es una página de listado
+  if (pt === 'home' && cat) pt = 'category';   // index.html?cat=... es una página de categoría
   var g = function (k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
   var id;
   try {
@@ -12,7 +12,7 @@
     if (!id) { id = 'u-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); localStorage.setItem('uid', id); }
   } catch (e) {}
   var u = g('user') || {}, snap = g('cartSnap');
-  var user = Object.assign({ uuid: id, language: 'es', returning: !!(u.email || g('order')), gdpr_optin: true },u);  
+  var user = Object.assign({ uuid: id, language: 'es', returning: !!(u.email || g('order')) }, u, { gdpr_optin: true }); // al final: pisa cualquier valor guardado antes
   var data = { page_type: pt, currency: 'EUR', user: user };
   if (snap && snap.items && snap.items.length) data.cart = snap;
 
