@@ -36,7 +36,7 @@ home(){
  <div class="grid">${L.map((p,i)=>`<a class="card" href="product.html?id=${p.id}" data-id="${p.id}" data-i="${i}">${thumb(p)}<div style="margin-top:10px">${p.name}</div><div class="mut">${p.tax.join(' › ')}</div><div class="price">${price(p)}</div></a>`).join('')}</div>`;
  const nm=path.length?path.join(' › '):'Catálogo';
  
- ev('view_item_list',{item_list_id:'catalogo',item_list_name:nm,items:L.map((p,i)=>item(p,1,nm,i))},{listing:{taxonomy:path,categories:cats()}});
+ ev('view_item_list',{item_list_id:'catalogo',item_list_name:nm,items:L.map((p,i)=>item(p,1,nm,i))},{category:{taxonomy:path,categories:cats()}});
  app.addEventListener('click',e=>{const a=e.target.closest('.card');if(!a)return;const p=prod(a.dataset.id);
   ev('select_item',{item_list_id:'catalogo',item_list_name:nm,items:[item(p,1,nm,+a.dataset.i)]});});
 },
