@@ -77,7 +77,7 @@ checkout(){
   if(e.target.name==='ship'){ship=e.target.value;sum();ev('add_shipping_info',{currency:'EUR',value:S,shipping_tier:SHIP[ship].n,items:items()});}
   if(e.target.name==='pay'){pay=e.target.value;ev('add_payment_info',{currency:'EUR',value:S,payment_type:PAY[pay],items:items()});}});
  $('#f').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target),sc=shipCost(ship,S),total=r2(S+sc);
-  {const nm=String(f.get('name')).trim().split(' ');set('user',{email:f.get('email'),name:nm[0],surname:nm.slice(1).join(' '),phone_number:f.get('phone')||undefined,gdpr_optin:!!f.get('optin'),email_optin:!!f.get('optin')});}
+  {const nm=String(f.get('name')).trim().split(' ');set('user',{email:f.get('email'),name:nm[0],surname:nm.slice(1).join(' '),phone_number:f.get('phone')||undefined,gdpr_optin:true,email_optin:!!f.get('optin')});}
   set('order',{id:'BR-'+Date.now().toString(36).toUpperCase(),date:new Date().toISOString(),customer:{name:f.get('name'),email:f.get('email'),addr:f.get('addr'),city:f.get('city')},items:items(),ins:insItems(),sub:S,ship:sc,shipTier:SHIP[ship].n,tax:r2(total-total/1.21),total,payment:PAY[pay],tracked:false});
   set('cart',[]);set('cartSnap',null);location.href='confirmation.html';});
 },

@@ -12,7 +12,7 @@
     if (!id) { id = 'u-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); localStorage.setItem('uid', id); }
   } catch (e) {}
   var u = g('user') || {}, snap = g('cartSnap');
-var user = Object.assign({ uuid: id, language: 'es', returning: !!(u.email || g('order')), gdpr_optin: true },u);  
+  var user = Object.assign({ uuid: id, language: 'es', returning: !!(u.email || g('order')), gdpr_optin: true },u);  
   var data = { page_type: pt, currency: 'EUR', user: user };
   if (snap && snap.items && snap.items.length) data.cart = snap;
 
