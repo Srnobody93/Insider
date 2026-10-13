@@ -3,6 +3,8 @@
    page_type, currency, user, cart y page_data (el objeto propio de cada página). */
 (function () {
   var pt = document.currentScript.dataset.page;
+  var cat = new URLSearchParams(location.search).get('cat');
+  if (pt === 'home' && cat) pt = 'listing';   // index.html?cat=... es una página de listado
   var g = function (k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
   var id;
   try {
@@ -22,6 +24,8 @@
     if (p) pd = window.insProduct(p);
   } else if (pt === 'cart' || pt === 'checkout') {  // checkout se trata como parte del carrito
     pd = snap && snap.items ? snap : { total: 0, items: [] };
+  } else if (pt === 'listing') {
+    pd = { taxonomy: cat.split('/') };
   } else if (pt === 'purchase') {
     var o = g('order');
     if (o) pd = { order_id: o.id, total: o.total, items: o.ins };
